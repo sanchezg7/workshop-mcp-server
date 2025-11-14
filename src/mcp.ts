@@ -15,4 +15,6 @@ server.registerTool('multiply', {
     return {
         content: [{type: "text", "text": String(a * b)}]
     }
-})
+});
+
+export default server;

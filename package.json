@@ -5,7 +5,8 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "inspect:mcp": "npx @modelcontextprotocol/inspector node src/stdio.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",

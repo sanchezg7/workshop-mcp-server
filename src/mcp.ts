@@ -60,10 +60,35 @@ server.registerTool('get-entries', {
 server.registerTool('create-entry', {
     title: 'Create entry',
     description: 'Create a new entry',
-    inputSchema: EntrySchema.shape,
+    inputSchema: z.object({
+        description: z.string(),
+        latitude: z.number(),
+        longitude: z.number()
+    }).shape,
     outputSchema: EntriesOutputSchema.shape
-}, async () => {
+}, async ({ description, latitude, longitude }: { description: string, latitude: number, longitude: number }) => {
+    // Send a POST request to create a new entry
+    const response = await fetch('https://workshop.gsans.net/api/entries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description, latitude, longitude })
+    });
 
+    const data = await response.json();
+
+    let validatedArray: Entry[];
+    try {
+        validatedArray = z.array(EntrySchema).parse(data);
+    } catch {
+        throw new Error("Unable to parse response");
+    }
+
+    const result: EntriesOutput = { result: validatedArray };
+
+    return {
+        content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        structuredContent: result
+    }
 })
 
 export default server;

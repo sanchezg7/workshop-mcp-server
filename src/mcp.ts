@@ -9,11 +9,13 @@ const server = new McpServer({
 server.registerTool('multiply', {
     title: 'Multiply',
     description: 'Multiply two numbers',
-    inputSchema: { a: z.number(), b: z.number() },
-    outputSchema: { result: z.number() }
-}, async ({ a, b}) => {
+    inputSchema: {a: z.number(), b: z.number()},
+    outputSchema: {result: z.number()}
+}, async ({a, b}: { a: number, b: number }) => {
+    const output = { result: a * b};
     return {
-        content: [{type: "text", "text": String(a * b)}]
+        content: [{type: "text", "text": JSON.stringify(output, null, 2)}],
+        structuredContent: output
     }
 });
 

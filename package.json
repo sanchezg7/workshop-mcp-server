@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0"
+  },
   "devDependencies": {
     "typescript": "^5.5.3"
   },

@@ -19,4 +19,51 @@ server.registerTool('multiply', {
     }
 });
 
+// Define the entry schema as a reusable schema
+const EntrySchema = z.object({
+    id: z.number(),
+    description: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    submitted_at: z.string().datetime()
+});
+
+// Define the output schema for the array of entries
+const EntriesOutputSchema = z.object({
+    result: z.array(EntrySchema)
+});
+
+// Type inference from the schema
+type Entry = z.infer<typeof EntrySchema>;
+type EntriesOutput = z.infer<typeof EntriesOutputSchema>;
+
+server.registerTool('get-entries', {
+    title: 'Get entries',
+    description: 'Get the entries of a list',
+    inputSchema: {},
+    outputSchema: EntriesOutputSchema.shape
+}, async () => {
+    const response = await fetch('https://workshop.gsans.net/api/entries');
+    const data = await response.json();
+
+    // Validate the data conforms to the schema
+    const validatedData = z.array(EntrySchema).parse(data);
+
+    const result: EntriesOutput = { result: validatedData };
+
+    return {
+        content: [{type: "text", text: JSON.stringify(result, null, 2)}],
+        structuredContent: result
+    }
+});
+
+server.registerTool('create-entry', {
+    title: 'Create entry',
+    description: 'Create a new entry',
+    inputSchema: EntrySchema.shape,
+    outputSchema: EntriesOutputSchema.shape
+}, async () => {
+
+})
+
 export default server;
